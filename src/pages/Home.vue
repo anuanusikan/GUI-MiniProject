@@ -30,20 +30,17 @@ onMounted(async () => {
 
 const filteredProducts = computed(() => {
   const q = searchStore.query.toLowerCase().trim()
-  const selected = filterStore.selectedCategory?.toLowerCase() ?? null
+  if (!q) return allProducts.value
 
   return allProducts.value.filter((p) => {
-    const matchesSearch =
-      !q ||
+    return (
       p.title.toLowerCase().includes(q) ||
       p.description.toLowerCase().includes(q) ||
       p.category.toLowerCase().includes(q)
-
-    const matchesCategory = !selected || p.category.toLowerCase() === selected
-
-    return matchesSearch && matchesCategory
+    )
   })
 })
+
 
 
 const totalCount = computed(() => allProducts.value.length)
