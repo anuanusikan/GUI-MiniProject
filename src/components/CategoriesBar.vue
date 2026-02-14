@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { getCategories } from "../services/productService"
 import { useFilterStore } from "../stores/filterStore"
 
@@ -9,23 +9,27 @@ const categories = ref<CategoryItem[]>([])
 const loading = ref(true)
 const filterStore = useFilterStore()
 
+const selectedSlug = computed(() => (filterStore.selectedCategory ?? "").toLowerCase())
+
 function getCategoryLabel(c: CategoryItem): string {
-  return typeof c === "string" ? c : c.name
+  return typeof c === "string" ? prettify(c) : c.name
+}
+
+function getCategorySlug(c: CategoryItem): string {
+  return typeof c === "string" ? c : c.slug
+}
+
+function prettify(slug: string) {
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (ch) => ch.toUpperCase())
 }
 
 function selectCategory(c: CategoryItem) {
-  const slug = typeof c === "string" ? c : c.slug
-  filterStore.setCategory(slug)
-
-  document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })
+  const slug = getCategorySlug(c)
+  filterStore.setCategory(slug) // ✅ keep bar visible
 }
 
-
 function clearCategory() {
-  filterStore.setCategory(null)
-
-  // keep CategoriesBar OPEN
-  document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })
+  filterStore.setCategory(null) // ✅ show all products
 }
 
 onMounted(async () => {
@@ -38,55 +42,43 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section id="categories" class="mb-6 scroll-mt-40">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-xl font-bold text-gray-900">Categories</h3>
-
-      <div class="flex items-center gap-3">
-        <button
-          class="text-sm font-semibold text-gray-700 hover:underline"
-          @click="filterStore.closeCategories()"
-        >
-          Close
-        </button>
-
-        <button
-          class="text-sm font-semibold text-indigo-700 hover:underline"
-          @click="clearCategory"
-        >
-          Clear
-        </button>
-      </div>
+  <section class="mb-4">
+    <div class="flex items-center justify-end mb-3">
+      <button v-if="filterStore.selectedCategory" class="text-sm font-semibold text-indigo-700 hover:underline"
+        @click="clearCategory">
+        Clear
+      </button>
     </div>
+
 
     <div v-if="loading" class="text-gray-600">Loading categories...</div>
 
     <div v-else class="flex gap-2 overflow-x-auto pb-2">
-      <button
-        class="whitespace-nowrap px-4 py-2 rounded-full border border-gray-200 bg-white
-               hover:bg-gray-50 transition text-sm font-medium text-gray-700"
-        @click="clearCategory"
-      >
+      <!-- All -->
+      <button @click="clearCategory"
+        class="whitespace-nowrap px-4 py-2 rounded-full border text-sm font-medium transition" :class="!selectedSlug
+            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+            : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+          ">
         All
       </button>
 
-      <button
-        v-for="c in categories"
-        :key="typeof c === 'string' ? c : c.slug"
-        class="whitespace-nowrap px-4 py-2 rounded-full border border-gray-200 bg-white
-               hover:bg-gray-50 transition text-sm font-medium text-gray-700"
-        @click="selectCategory(c)"
-      >
+      <!-- Category buttons -->
+      <button v-for="c in categories" :key="getCategorySlug(c)" @click="selectCategory(c)"
+        class="whitespace-nowrap px-4 py-2 rounded-full border text-sm font-medium transition" :class="selectedSlug === getCategorySlug(c).toLowerCase()
+            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+            : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+          ">
         {{ getCategoryLabel(c) }}
       </button>
     </div>
 
-    <!-- Optional: show which category is selected -->
+    <!-- Selected label -->
     <p v-if="filterStore.selectedCategory" class="mt-3 text-sm text-gray-600">
       Selected:
-      <span class="font-semibold text-gray-800">{{ filterStore.selectedCategory }}</span>
+      <span class="font-semibold text-gray-900">
+        {{ prettify(filterStore.selectedCategory) }}
+      </span>
     </p>
   </section>
 </template>
-
-

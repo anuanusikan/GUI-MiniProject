@@ -1,5 +1,14 @@
 import type { Product } from "../types/product"
 
+
+export async function getProductsByCategory(slug: string): Promise<Product[]> {
+  const res = await fetch(`https://dummyjson.com/products/category/${slug}`)
+  if (!res.ok) throw new Error("Failed to fetch category products")
+  const data = await res.json()
+  return data.products as Product[]
+}
+
+
 const BASE_URL = "https://dummyjson.com"
 
 export async function getAllProducts(): Promise<Product[]> {
