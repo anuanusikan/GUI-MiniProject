@@ -4,9 +4,11 @@ import { useSearchStore } from "../stores/searchStore"
 import { useFilterStore } from "../stores/filterStore"
 import ProfileMenu from "./ProfileMenu.vue"
 import AuthModal from "./AuthModal.vue"
+import { useCartStore } from "../stores/cartStore"
+import { useFavoritesStore } from "../stores/favoritesStore"
 
-
-
+const favoritesStore = useFavoritesStore()
+const cartStore = useCartStore()
 const isMenuOpen = ref(false)
 const searchStore = useSearchStore()
 const filterStore = useFilterStore()
@@ -98,15 +100,19 @@ function closeProfile() {
 
           <!-- Icons (top right corner) -->
           <div class="flex items-center gap-1 sm:gap-2">
-            <button class="p-2 rounded-md hover:bg-gray-100 transition text-gray-700" aria-label="Favourite">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M21 8.25c0-2.485-2.099-4.5-4.687-4.5-1.935 0-3.597 1.126-4.313 2.733C11.284 4.876 9.622 3.75 7.687 3.75 5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-              </svg>
-            </button>
+            <router-link to="/favorites"
+              class="p-2 rounded-md hover:bg-gray-100 transition text-gray-700 relative inline-flex"
+              aria-label="Favorites">
+              ❤️
 
-            <button class="p-2 rounded-md hover:bg-gray-100 transition text-gray-700 relative" aria-label="Cart">
+              <span v-if="favoritesStore.count > 0"
+                class="absolute -top-1 -right-1 text-[10px] px-1.5 py-1 rounded-full bg-rose-600 text-white">
+                {{ favoritesStore.count }}
+              </span>
+            </router-link>
+
+            <router-link to="/cart"
+              class="p-2 rounded-md hover:bg-gray-100 transition text-gray-700 relative inline-flex" aria-label="Cart">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -114,11 +120,12 @@ function closeProfile() {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                   d="M9 20.25a.75.75 0 100-1.5.75.75 0 000 1.5zm6 0a.75.75 0 100-1.5.75.75 0 000 1.5z" />
               </svg>
-              <span
+
+              <span v-if="cartStore.totalItems > 0"
                 class="absolute -top-1 -right-1 text-[10px] leading-none px-1.5 py-1 rounded-full bg-indigo-600 text-white">
-                2
+                {{ cartStore.totalItems }}
               </span>
-            </button>
+            </router-link>
 
             <div class="relative">
               <button class="p-2 rounded-md hover:bg-gray-100 transition text-gray-700" aria-label="Profile"
