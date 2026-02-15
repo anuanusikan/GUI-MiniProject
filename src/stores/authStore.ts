@@ -19,7 +19,18 @@ export const useAuthStore = defineStore("auth", () => {
   function loadUser(): User | null {
     try {
       const raw = localStorage.getItem(LS_KEY)
-      return raw ? (JSON.parse(raw) as User) : null
+      if (!raw) return null
+
+      const parsed = JSON.parse(raw) as Partial<User>
+
+      // If persisted user is missing a name, derive a sensible fallback from the email
+      if (parsed && !parsed.name && parsed.email) {
+        parsed.name = parsed.email.split("@")[0]
+        // update persisted value so future loads are consistent
+        localStorage.setItem(LS_KEY, JSON.stringify(parsed))
+      }
+
+      return (parsed as User) || null
     } catch {
       return null
     }
