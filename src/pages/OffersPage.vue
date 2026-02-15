@@ -140,33 +140,25 @@ onUnmounted(() => {
         <div class="flex flex-wrap gap-2">
           <button
             class="px-4 py-2 rounded-full text-sm font-semibold border border-white/20 hover:bg-white/10 transition"
-            :class="minDiscount === 10 ? 'bg-white/15' : ''"
-            @click="minDiscount = 10"
-          >
+            :class="minDiscount === 10 ? 'bg-white/15' : ''" @click="minDiscount = 10">
             10%+ Deals
           </button>
 
           <button
             class="px-4 py-2 rounded-full text-sm font-semibold border border-white/20 hover:bg-white/10 transition"
-            :class="minDiscount === 15 ? 'bg-white/15' : ''"
-            @click="minDiscount = 15"
-          >
+            :class="minDiscount === 15 ? 'bg-white/15' : ''" @click="minDiscount = 15">
             15%+ Deals
           </button>
 
           <button
             class="px-4 py-2 rounded-full text-sm font-semibold border border-white/20 hover:bg-white/10 transition"
-            :class="minDiscount === 20 ? 'bg-white/15' : ''"
-            @click="minDiscount = 20"
-          >
+            :class="minDiscount === 20 ? 'bg-white/15' : ''" @click="minDiscount = 20">
             20%+ Flash Deals
           </button>
 
           <button
             class="px-4 py-2 rounded-full text-sm font-semibold border border-white/20 hover:bg-white/10 transition"
-            :class="minDiscount === 30 ? 'bg-white/15' : ''"
-            @click="minDiscount = 30"
-          >
+            :class="minDiscount === 30 ? 'bg-white/15' : ''" @click="minDiscount = 30">
             30%+ Mega Deals
           </button>
         </div>
@@ -175,11 +167,8 @@ onUnmounted(() => {
         <div class="flex items-center gap-2">
           <label class="text-sm font-semibold text-white/90">Sort:</label>
 
-          <select
-            v-model="sortBy"
-            class="rounded-lg border border-white/20 bg-white/10 text-white px-3 py-2 text-sm
-                   focus:outline-none focus:ring-2 focus:ring-white/30"
-          >
+          <select v-model="sortBy" class="rounded-lg border border-white/20 bg-white/10 text-white px-3 py-2 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-white/30">
             <option class="text-gray-900" value="discount">Highest discount</option>
             <option class="text-gray-900" value="rating">Top rated</option>
             <option class="text-gray-900" value="priceAsc">Price: low to high</option>

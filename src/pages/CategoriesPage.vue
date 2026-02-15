@@ -25,8 +25,8 @@ onMounted(async () => {
 })
 
 const filteredProducts = computed(() => {
-const q = searchStore.query.toLowerCase().trim()
-const selected = (filterStore.selectedCategory ?? "").toLowerCase().trim()
+  const q = searchStore.query.toLowerCase().trim()
+  const selected = (filterStore.selectedCategory ?? "").toLowerCase().trim()
 
   return allProducts.value.filter((p) => {
     const matchesCategory = !selected || p.category.toLowerCase() === selected
@@ -48,15 +48,14 @@ const selected = (filterStore.selectedCategory ?? "").toLowerCase().trim()
     <!-- Always visible -->
     <CategoriesBar />
 
-    <p v-if="loading" class="text-gray-600">Loading products...</p>
+    <div v-if="loading" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div v-for="i in 8" :key="i" class="animate-pulse rounded-2xl h-64
+           bg-gray-200 dark:bg-gray-700"></div>
+    </div>
     <p v-else-if="error" class="text-red-600">{{ error }}</p>
 
-    <div
-      v-else
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-    >
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <ProductCard v-for="p in filteredProducts" :key="p.id" :product="p" />
     </div>
   </section>
 </template>
-

@@ -42,7 +42,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="mb-4">
+  <section id="categories" class="mb-4">
     <div class="flex items-center justify-end mb-3">
       <button v-if="filterStore.selectedCategory" class="text-sm font-semibold text-indigo-700 hover:underline"
         @click="clearCategory">
