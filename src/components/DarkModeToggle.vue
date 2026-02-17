@@ -6,10 +6,10 @@ const darkMode = useDarkModeStore()
 
 <template>
   <button
-    @click="darkMode.toggle()"
-    class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-    aria-label="Toggle dark mode"
-  >
+  @click="darkMode.toggle()"
+  class="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition"
+  aria-label="Toggle dark mode"
+>
     <!-- Sun icon (shows in dark mode) -->
     <svg
       v-if="darkMode.isDark"
@@ -35,7 +35,7 @@ const darkMode = useDarkModeStore()
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      class="w-6 h-6 text-gray-700"
+      class="w-6 h-6 text-[#f5d27a]"
     >
       <path
         stroke-linecap="round"

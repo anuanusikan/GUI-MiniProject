@@ -20,52 +20,51 @@ const demoAccounts = [
   { name: "Admin User", email: "admin@demo.com", password: "admin123" },
 ]
 
-function useDemoAccount(account: typeof demoAccounts[0]) {
+function useDemoAccount(account: typeof demoAccounts[number]) {
   email.value = account.email
   password.value = account.password
   toast.show(`Using ${account.name}'s account`, "info")
 }
 
 async function handleSignIn() {
-  if (!email.value || !password.value) {
+  const e = email.value.trim()
+  const p = password.value
+
+  if (!e || !p) {
     toast.show("Please fill in all fields", "error")
     return
   }
 
   loading.value = true
 
-  // Simulate API call
   setTimeout(() => {
     // Check demo accounts
-    const demoAccount = demoAccounts.find(
-      (acc) => acc.email === email.value && acc.password === password.value
-    )
+    const demoAccount = demoAccounts.find((acc) => acc.email === e && acc.password === p)
 
     if (demoAccount) {
-      // Use demo account data
-      auth.signIn({
-        name: demoAccount.name,
-        email: demoAccount.email,
-      })
+      auth.signIn({ name: demoAccount.name, email: demoAccount.email })
       toast.show(`Welcome back, ${demoAccount.name}!`, "success")
       router.push("/")
-    } else {
-      // Any other email/password combination works (demo mode)
-      // Extract name from email (part before @)
-      const nameFromEmail = email.value.split("@")[0]
-      // Capitalize first letter
-      const capitalizedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
-      
-      auth.signIn({
-        name: capitalizedName,
-        email: email.value,
-      })
-      toast.show("Signed in successfully!", "success")
-      router.push("/")
+      loading.value = false
+      return
     }
 
+    // ✅ FIX: nameFromEmail cannot be undefined with this safe fallback
+    const nameFromEmail = (e.split("@")[0] || "User").trim()
+    const capitalizedName =
+      nameFromEmail.length > 0
+        ? nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
+        : "User"
+
+    auth.signIn({
+      name: capitalizedName,
+      email: e,
+    })
+
+    toast.show("Signed in successfully!", "success")
+    router.push("/")
     loading.value = false
-  }, 1000)
+  }, 900)
 }
 
 function goToSignUp() {
@@ -74,51 +73,57 @@ function goToSignUp() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+  <div
+    class="min-h-screen flex items-center justify-center py-12 px-4
+           bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.18),_transparent_60%),linear-gradient(135deg,_#f8fafc_0%,_#fde68a_35%,_#dbeafe_100%)]
+           dark:bg-[radial-gradient(ellipse_at_top,_rgba(250,204,21,0.16),_transparent_60%),linear-gradient(135deg,_#000000_0%,_#111827_45%,_#a3a3a3_120%)]"
+  >
     <div class="w-full max-w-md">
-      <!-- Logo/Brand -->
+      <!-- Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-2 mb-4">
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            viewBox="0 0 24 24" 
-            fill="currentColor" 
-            class="w-12 h-12 text-indigo-600 dark:text-indigo-400"
-          >
-            <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
-          </svg>
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl
+                    bg-white/70 border border-gray-200 shadow-md
+                    dark:bg-white/10 dark:border-white/15 backdrop-blur">
+          <span class="text-2xl">🛒</span>
         </div>
-        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">
-          Welcome to <span class="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">AlloraCart</span>
+
+        <h1 class="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">
+          Welcome back to
+          <span class="bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">
+            AlloraCart
+          </span>
         </h1>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Sign in to continue shopping</p>
+        <p class="mt-2 text-sm text-gray-700/80 dark:text-white/70">Sign in to continue shopping</p>
       </div>
 
-      <!-- Sign In Card -->
-      <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl p-8">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Sign In</h2>
+      <!-- Card -->
+      <div
+        class="rounded-2xl border shadow-xl p-8 backdrop-blur
+               border-gray-200 bg-white/75
+               dark:border-white/10 dark:bg-black/35"
+      >
+        <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-6">Sign In</h2>
 
         <form @submit.prevent="handleSignIn" class="space-y-5">
           <!-- Email -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-bold text-gray-800 dark:text-white/80 mb-2">
               Email Address
             </label>
             <input
               v-model="email"
               type="email"
               placeholder="your@email.com"
-              class="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600
-                     bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                     placeholder:text-gray-400 dark:placeholder:text-gray-500
-                     focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800
-                     transition-all"
+              class="w-full px-4 py-3 rounded-xl border-2
+                     border-gray-200 bg-white text-gray-900
+                     focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                     dark:border-white/15 dark:bg-white/10 dark:text-white dark:placeholder:text-white/50"
             />
           </div>
 
           <!-- Password -->
           <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-bold text-gray-800 dark:text-white/80 mb-2">
               Password
             </label>
             <div class="relative">
@@ -126,84 +131,67 @@ function goToSignUp() {
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 placeholder="Enter your password"
-                class="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       placeholder:text-gray-400 dark:placeholder:text-gray-500
-                       focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800
-                       transition-all pr-12"
+                class="w-full px-4 py-3 rounded-xl border-2 pr-12
+                       border-gray-200 bg-white text-gray-900
+                       focus:ring-2 focus:ring-amber-400 focus:border-transparent
+                       dark:border-white/15 dark:bg-white/10 dark:text-white dark:placeholder:text-white/50"
               />
               <button
                 type="button"
                 @click="showPassword = !showPassword"
-                class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition"
+                class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg
+                       hover:bg-black/5 dark:hover:bg-white/10 transition"
               >
-                <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                </svg>
+                <span class="text-sm font-bold text-gray-700 dark:text-white/80">
+                  {{ showPassword ? "Hide" : "Show" }}
+                </span>
               </button>
             </div>
           </div>
 
-          <!-- Sign In Button -->
+          <!-- Button -->
           <button
             type="submit"
             :disabled="loading"
-            class="w-full py-3 rounded-xl font-bold text-white
-                   bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500
-                   hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600
-                   disabled:opacity-50 disabled:cursor-not-allowed
-                   shadow-lg hover:shadow-xl transition-all duration-200
-                   flex items-center justify-center gap-2"
+            class="w-full py-3 rounded-xl font-extrabold
+                   text-black bg-gradient-to-r from-amber-400 to-yellow-300
+                   hover:opacity-90 transition disabled:opacity-60"
           >
-            <svg v-if="loading" class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
             {{ loading ? "Signing In..." : "Sign In" }}
           </button>
         </form>
 
         <!-- Demo Accounts -->
-        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 text-center">
+        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
+          <p class="text-sm font-extrabold text-gray-900 dark:text-white mb-3 text-center">
             🎭 Try Demo Accounts
           </p>
+
           <div class="space-y-2">
             <button
               v-for="account in demoAccounts"
               :key="account.email"
               @click="useDemoAccount(account)"
               type="button"
-              class="w-full px-4 py-2 rounded-lg border-2 border-gray-200 dark:border-gray-700
-                     bg-gray-50 dark:bg-gray-700 text-left
-                     hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20
-                     transition-all group"
+              class="w-full px-4 py-2 rounded-xl text-left border
+                     border-gray-200 bg-white/70 hover:bg-white/90 transition
+                     dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
             >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ account.name }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ account.email }}</p>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
+              <p class="text-sm font-bold text-gray-900 dark:text-white">{{ account.name }}</p>
+              <p class="text-xs text-gray-600 dark:text-white/60">{{ account.email }}</p>
             </button>
           </div>
         </div>
 
-        <!-- Sign Up Link -->
+        <!-- Link -->
         <div class="mt-6 text-center">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-sm text-gray-700 dark:text-white/70">
             Don't have an account?
             <button
               @click="goToSignUp"
               type="button"
-              class="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition"
+              class="font-extrabold text-gray-900 dark:text-white underline underline-offset-4
+                     hover:text-amber-600 dark:hover:text-amber-300 transition"
             >
               Sign Up
             </button>
@@ -211,16 +199,12 @@ function goToSignUp() {
         </div>
       </div>
 
-      <!-- Back to Home -->
       <div class="mt-6 text-center">
         <router-link
           to="/"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+          class="text-sm font-bold text-gray-800 dark:text-white/80 hover:text-amber-600 dark:hover:text-amber-300 transition"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Home
+          ← Back to Home
         </router-link>
       </div>
     </div>

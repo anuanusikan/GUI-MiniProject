@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"
 
-// Pages
+// pages
 import Home from "../pages/Home.vue"
 import CategoriesPage from "../pages/CategoriesPage.vue"
 import CategoryProducts from "../pages/CategoryProducts.vue"
@@ -11,12 +11,15 @@ import CheckoutPage from "../pages/CheckoutPage.vue"
 import FavoritesPage from "../pages/FavoritesPage.vue"
 import SignInPage from "../pages/SignInPage.vue"
 import SignUpPage from "../pages/SignUpPage.vue"
+import AboutPage from "../pages/AboutPage.vue"
+import SettingsPage from "../pages/SettingsPage.vue"
 import MyOrdersPage from "../pages/MyOrdersPage.vue"
 import MessagesPage from "../pages/MessagesPage.vue"
 import PaymentMethodsPage from "../pages/PaymentMethodsPage.vue"
-import SettingsPage from "../pages/SettingsPage.vue"
 
-// ✅ Import stores for route protection
+
+
+//  Pinia stores (safe inside guard)
 import { useAuthStore } from "../stores/authStore"
 import { useCheckoutStore } from "../stores/checkoutStore"
 
@@ -26,15 +29,16 @@ const routes = [
   { path: "/category/:slug", name: "CategoryProducts", component: CategoryProducts },
   { path: "/product/:id", name: "ProductDetails", component: ProductDetailsPage },
   { path: "/offers", name: "Offers", component: OffersPage },
-
-  // Protected routes (guard will handle access)
   { path: "/cart", name: "Cart", component: CartPage },
   { path: "/checkout", name: "Checkout", component: CheckoutPage },
-
   { path: "/favorites", name: "Favorites", component: FavoritesPage },
   { path: "/signin", name: "SignIn", component: SignInPage },
   { path: "/signup", name: "SignUp", component: SignUpPage },
-
+  {
+    path: "/settings",
+    name: "Settings",
+    component: SettingsPage,
+  },
   {
     path: "/orders",
     name: "Orders",
@@ -46,44 +50,37 @@ const routes = [
     component: MessagesPage,
   },
   {
-    path: "/payment-methods",
-    name: "PaymentMethods",
+    path: "/payment",
+    name: "Payment",
     component: PaymentMethodsPage,
   },
   {
-    path: "/settings",
-    name: "Settings",
-    component: SettingsPage,
+    path: "/about",
+    name: "About",
+    component: AboutPage,
   },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-
-  // ✅ Smooth UX: always open pages from top
   scrollBehavior() {
     return { top: 0 }
   },
 })
 
-/**
- * ✅ Route Guard:
- * - Block /checkout if not signed in
- * - Block /checkout if no selected items
- * - Block /cart if not signed in
- */
+
 router.beforeEach((to) => {
   const auth = useAuthStore()
   const checkout = useCheckoutStore()
 
+  if (to.path === "/cart" && !auth.isAuthenticated) {
+    return "/signin"
+  }
+
   if (to.path === "/checkout") {
     if (!auth.isAuthenticated) return "/signin"
     if (!checkout.selectedIds.length) return "/cart"
-  }
-
-  if (to.path === "/cart" && !auth.isAuthenticated) {
-    return "/signin"
   }
 })
 
