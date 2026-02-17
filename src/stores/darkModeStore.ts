@@ -4,10 +4,12 @@ import { ref, watch } from "vue"
 export const useDarkModeStore = defineStore("darkMode", () => {
   const isDark = ref(false)
 
-  // Load from localStorage
+  // Load from localStorage - start light mode by default
   const saved = localStorage.getItem("darkMode")
-  if (saved) {
+  if (saved !== null) {
     isDark.value = saved === "true"
+  } else {
+    isDark.value = false // Default to light mode
   }
 
   // Apply dark class
@@ -19,6 +21,9 @@ export const useDarkModeStore = defineStore("darkMode", () => {
     }
   }
 
+  // Initialize immediately
+  apply()
+
   // Toggle function
   function toggle() {
     isDark.value = !isDark.value
@@ -28,7 +33,7 @@ export const useDarkModeStore = defineStore("darkMode", () => {
   watch(isDark, (value) => {
     localStorage.setItem("darkMode", String(value))
     apply()
-  }, { immediate: true })
+  })
 
   return { isDark, toggle }
 })

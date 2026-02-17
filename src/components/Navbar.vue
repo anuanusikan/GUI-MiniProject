@@ -1,3 +1,4 @@
+<!-- src/components/Navbar.vue -->
 <script setup lang="ts">
 import { ref } from "vue"
 import { useRouter } from "vue-router"
@@ -37,19 +38,34 @@ function goHome() {
 <template>
   <header class="sticky top-0 z-50">
     <!-- FIRST ROW: Brand + Search + Icons + DARK MODE -->
-    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
-      <div class="max-w-7xl mx-auto px-4">
+    <!-- Theme: Gold + Black + Silver gradient (no layout changes) -->
+    <div
+      class="border-b border-[#d4af37]/20 shadow-[0_8px_30px_rgba(0,0,0,0.25)]
+             bg-gradient-to-r from-[#133739] via-[#413434] to-[#21384b]
+             relative"
+    >
+      <!-- subtle metallic sheen -->
+      <div
+        class="pointer-events-none absolute inset-0 opacity-70"
+        style="
+          background:
+            radial-gradient(1200px 200px at 20% 0%, rgba(212,175,55,0.18), transparent 60%),
+            radial-gradient(900px 180px at 80% 0%, rgba(220,220,220,0.14), transparent 55%),
+            linear-gradient(180deg, rgba(255,255,255,0.06), transparent 40%);
+        "
+      />
+      <div class="max-w-7xl mx-auto px-4 relative">
         <div class="h-16 flex items-center gap-3">
           <!-- Mobile Menu Button -->
           <button
-            class="lg:hidden p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            class="lg:hidden p-2 rounded-md hover:bg-white/10 transition"
             @click="toggleMenu"
             aria-label="Toggle menu"
           >
             <svg
               v-if="!isMenuOpen"
               xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-gray-700 dark:text-gray-300"
+              class="w-6 h-6 text-[#e6e6e6]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -65,7 +81,7 @@ function goHome() {
             <svg
               v-else
               xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-gray-700 dark:text-gray-300"
+              class="w-6 h-6 text-[#e6e6e6]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -83,23 +99,32 @@ function goHome() {
           <button @click="goHome" class="flex items-center gap-2 group">
             <!-- Shopping cart icon -->
             <div class="relative">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="currentColor" 
-                class="w-8 h-8 text-indigo-600 dark:text-indigo-400 transition-transform group-hover:scale-110"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-8 h-8 transition-transform group-hover:scale-110
+                       text-[#d4af37] drop-shadow-[0_6px_18px_rgba(212,175,55,0.22)]"
               >
-                <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
+                <path
+                  d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
+                />
               </svg>
-              <span class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-indigo-600 dark:bg-indigo-400"></span>
+
+              <!-- accent dot -->
+              <span
+                class="absolute -top-1 -right-1 h-3 w-3 rounded-full
+                       bg-gradient-to-r from-[#d4af37] to-[#f3e7b6]
+                       shadow-[0_0_0_2px_rgba(0,0,0,0.65)]"
+              ></span>
             </div>
-            
+
             <!-- Text -->
             <div class="flex flex-col leading-tight">
-              <span class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">
-                Allora<span class="text-indigo-600 dark:text-indigo-400">Cart</span>
+              <span class="text-xl sm:text-2xl font-extrabold text-[#f3f3f3]">
+                Allora<span class="text-[#d4af37]">Cart</span>
               </span>
-              <span class="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wider">
+              <span class="text-[10px] text-[#cfcfcf]/80 font-medium tracking-wider">
                 SHOP SMARTER
               </span>
             </div>
@@ -109,7 +134,7 @@ function goHome() {
           <form class="flex-1 flex items-center" @submit.prevent="onSearch">
             <div class="w-full max-w-2xl mx-auto hidden sm:block">
               <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/60">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="w-5 h-5"
@@ -130,20 +155,22 @@ function goHome() {
                   v-model="searchStore.query"
                   type="text"
                   placeholder="Search products..."
-                  class="w-full pl-10 pr-24 py-2 rounded-full 
-                         border border-gray-200 dark:border-gray-600 
-                         bg-white dark:bg-gray-700 
-                         text-gray-900 dark:text-white
-                         placeholder:text-gray-400 dark:placeholder:text-gray-500
-                         focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400
+                  class="w-full pl-10 pr-24 py-2 rounded-full
+                         border border-white/10
+                         bg-white/5 text-white
+                         placeholder:text-white/45
+                         focus:outline-none focus:ring-2 focus:ring-[#d4af37]/40
+                         focus:border-[#d4af37]/30
                          transition-colors"
                 />
 
                 <button
                   type="submit"
                   class="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-full
-                         bg-indigo-600 dark:bg-indigo-500 text-white text-sm font-semibold 
-                         hover:bg-indigo-700 dark:hover:bg-indigo-600 transition"
+                         text-sm font-semibold text-black
+                         bg-gradient-to-r from-[#d4af37] via-[#f0e1a6] to-[#c0c0c0]
+                         hover:brightness-110 transition
+                         shadow-[0_10px_20px_rgba(0,0,0,0.35)]"
                 >
                   Search
                 </button>
@@ -153,8 +180,7 @@ function goHome() {
             <!-- Mobile: Search icon -->
             <button
               type="button"
-              class="sm:hidden ml-auto p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 
-                     transition text-gray-700 dark:text-gray-300"
+              class="sm:hidden ml-auto p-2 rounded-md hover:bg-white/10 transition text-[#e6e6e6]"
               aria-label="Search"
               @click="toggleMenu"
             >
@@ -180,8 +206,7 @@ function goHome() {
             <!-- Favourite -->
             <router-link
               to="/favorites"
-              class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 
-                     transition text-gray-700 dark:text-gray-300 relative inline-flex"
+              class="p-2 rounded-md hover:bg-white/10 transition text-[#e6e6e6] relative inline-flex"
               aria-label="Favorites"
             >
               <svg
@@ -201,8 +226,9 @@ function goHome() {
 
               <span
                 v-if="favoritesStore.count > 0"
-                class="absolute -top-1 -right-1 text-[10px] px-1.5 py-1 rounded-full 
-                       bg-rose-600 dark:bg-rose-500 text-white"
+                class="absolute -top-1 -right-1 text-[10px] px-1.5 py-1 rounded-full
+                       bg-gradient-to-r from-[#d4af37] to-[#f0e1a6] text-black
+                       shadow-[0_0_0_2px_rgba(0,0,0,0.7)]"
               >
                 {{ favoritesStore.count }}
               </span>
@@ -211,8 +237,7 @@ function goHome() {
             <!-- Cart -->
             <router-link
               to="/cart"
-              class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 
-                     transition text-gray-700 dark:text-gray-300 relative inline-flex"
+              class="p-2 rounded-md hover:bg-white/10 transition text-[#e6e6e6] relative inline-flex"
               aria-label="Cart"
             >
               <svg
@@ -239,13 +264,15 @@ function goHome() {
               <span
                 v-if="cartStore.totalItems > 0"
                 class="absolute -top-1 -right-1 text-[10px] leading-none px-1.5 py-1 rounded-full
-                       bg-indigo-600 dark:bg-indigo-500 text-white"
+                       bg-gradient-to-r from-[#c0c0c0] to-[#d4af37] text-black
+                       shadow-[0_0_0_2px_rgba(0,0,0,0.7)]"
               >
                 {{ cartStore.totalItems }}
               </span>
             </router-link>
 
-            <!-- PROFILE MENU - THIS IS THE FIX! -->
+            <!-- PROFILE MENU -->
+            <!--  Make sure ProfileMenu button is visible on dark/normal: we already changed navbar bg -->
             <ProfileMenu />
 
             <!-- DARK MODE TOGGLE -->
@@ -255,16 +282,27 @@ function goHome() {
       </div>
     </div>
 
-    <!-- SECOND ROW: Beautiful Gradient Nav Bar -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-900 dark:to-purple-900 text-white transition-colors shadow-lg">
-      <div class="max-w-7xl mx-auto px-4">
+    <!-- SECOND ROW: Gradient Nav Bar -->
+    <!-- ✅ Same theme, keep your same links + behavior -->
+    <div
+      class="text-white transition-colors shadow-lg
+             bg-gradient-to-r from-[#516050] via-[#1b1b1b] to-[#414551]
+             border-b border-[#d4af37]/15 relative"
+    >
+      <div
+        class="pointer-events-none absolute inset-0"
+        style="
+          background:
+            linear-gradient(90deg, rgba(212,175,55,0.12), transparent 25%, rgba(192,192,192,0.10) 50%, transparent 75%, rgba(212,175,55,0.12)),
+            radial-gradient(900px 180px at 50% 0%, rgba(255,255,255,0.06), transparent 60%);
+        "
+      />
+      <div class="max-w-7xl mx-auto px-4 relative">
         <!-- Desktop Nav (centered) -->
-        <div
-          class="h-12 hidden lg:flex items-center justify-center gap-10 text-sm font-semibold tracking-wide"
-        >
+        <div class="h-12 hidden lg:flex items-center justify-center gap-10 text-sm font-semibold tracking-wide">
           <router-link
             to="/"
-            class="hover:text-indigo-100 dark:hover:text-indigo-200 hover:scale-105 transition-all"
+            class="hover:text-[#f3e7b6] hover:scale-105 transition-all"
             @click="filterStore.closeCategories()"
           >
             Home
@@ -272,7 +310,7 @@ function goHome() {
 
           <router-link
             to="/categories"
-            class="hover:text-indigo-100 dark:hover:text-indigo-200 hover:scale-105 transition-all"
+            class="hover:text-[#f3e7b6] hover:scale-105 transition-all"
             @click="filterStore.openCategories()"
           >
             Categories
@@ -280,7 +318,7 @@ function goHome() {
 
           <router-link
             to="/offers"
-            class="hover:text-indigo-100 dark:hover:text-indigo-200 hover:scale-105 transition-all"
+            class="hover:text-[#f3e7b6] hover:scale-105 transition-all"
             @click="filterStore.closeCategories()"
           >
             Offers
@@ -288,19 +326,13 @@ function goHome() {
 
           <router-link
             to="/about"
-            class="hover:text-indigo-100 dark:hover:text-indigo-200 hover:scale-105 transition-all"
+            class="hover:text-[#f3e7b6] hover:scale-105 transition-all"
             @click="filterStore.closeCategories()"
           >
             About
           </router-link>
 
-          <router-link
-            to="/contact"
-            class="hover:text-indigo-100 dark:hover:text-indigo-200 hover:scale-105 transition-all"
-            @click="filterStore.closeCategories()"
-          >
-            Contact
-          </router-link>
+    
         </div>
 
         <!-- Mobile/Tablet Menu (dropdown) -->
@@ -308,7 +340,7 @@ function goHome() {
           <!-- Mobile Search bar -->
           <form class="sm:hidden mb-3" @submit.prevent="onSearch">
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/70">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/60">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="w-5 h-5"
@@ -330,8 +362,8 @@ function goHome() {
                 type="text"
                 placeholder="Search products..."
                 class="w-full pl-10 pr-3 py-2 rounded-lg text-white
-                       border border-white/20 bg-white/10 placeholder:text-white/70
-                       focus:outline-none focus:ring-2 focus:ring-white/30"
+                       border border-white/10 bg-white/5 placeholder:text-white/45
+                       focus:outline-none focus:ring-2 focus:ring-[#d4af37]/40"
               />
             </div>
           </form>
@@ -339,7 +371,7 @@ function goHome() {
           <nav class="flex flex-col gap-2">
             <router-link
               to="/"
-              class="px-3 py-2 rounded-md hover:bg-white/20 transition"
+              class="px-3 py-2 rounded-md hover:bg-white/10 transition"
               @click="filterStore.closeCategories(); closeMenu()"
             >
               Home
@@ -347,7 +379,7 @@ function goHome() {
 
             <router-link
               to="/categories"
-              class="px-3 py-2 rounded-md hover:bg-white/20 transition"
+              class="px-3 py-2 rounded-md hover:bg-white/10 transition"
               @click="filterStore.openCategories(); closeMenu()"
             >
               Categories
@@ -355,7 +387,7 @@ function goHome() {
 
             <router-link
               to="/offers"
-              class="px-3 py-2 rounded-md hover:bg-white/20 transition"
+              class="px-3 py-2 rounded-md hover:bg-white/10 transition"
               @click="filterStore.closeCategories(); closeMenu()"
             >
               Offers
@@ -363,19 +395,13 @@ function goHome() {
 
             <router-link
               to="/about"
-              class="px-3 py-2 rounded-md hover:bg-white/20 transition"
+              class="px-3 py-2 rounded-md hover:bg-white/10 transition"
               @click="filterStore.closeCategories(); closeMenu()"
             >
               About
             </router-link>
 
-            <router-link
-              to="/contact"
-              class="px-3 py-2 rounded-md hover:bg-white/20 transition"
-              @click="filterStore.closeCategories(); closeMenu()"
-            >
-              Contact
-            </router-link>
+           
           </nav>
         </div>
       </div>

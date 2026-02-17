@@ -42,8 +42,12 @@ const filteredProducts = computed(() => {
 </script>
 
 <template>
-  <section class="py-6">
-    <h1 class="text-2xl font-bold text-gray-900 mb-4">Categories</h1>
+  <section class="py-4">
+    <h1 class="text-xl font-extrabold tracking-wide
+           bg-gradient-to-r from-orange-900 to-gray-400 dark:from-green-800 dark:to-gray-400
+           bg-clip-text text-transparent">
+  Categories
+</h1>
 
     <!-- Always visible -->
     <CategoriesBar />

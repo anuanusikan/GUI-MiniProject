@@ -10,6 +10,7 @@ const cart = useCartStore()
 const checkout = useCheckoutStore()
 const toast = useToastStore()
 
+
 const step = ref<1 | 2>(1)
 
 function money(n: number) {
@@ -51,8 +52,6 @@ function applyPromo() {
 }
 
 function placeOrder() {
-  // Demo: remove selected items from cart
-  const selectedIds = new Set(checkout.selectedIds)
   checkout.selectedItems.forEach((it) => {
     cart.removeFromCart(it.id)
   })
