@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const companyLinks = [
-  "About Shop In Haven",
+  "About AlloraCart",
   "Affiliate Program: Join to Earn",
   "Contact us",
   "Careers",

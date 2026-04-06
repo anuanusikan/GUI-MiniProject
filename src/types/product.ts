@@ -5,4 +5,13 @@ export interface Product {
   price: number
   category: string
   thumbnail: string
+  discountPercentage?: number
+  rating?: number
+}
+
+export interface ProductResponse {
+  products: Product[]
+  total: number
+  skip: number
+  limit: number
 }

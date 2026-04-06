@@ -1,0 +1,210 @@
+﻿========================================================
+  AlloraCart - AI Usage Log  (prompts.txt)
+  CS3404: GUI Programming Mini Project
+  Student: Sujenthiran Anusikan
+  Format: The aim XX / Actual prompt
+========================================================
+
+--------------------------------------------------------
+The aim 01: Create a reusable Navbar component with left-aligned logo, website name, and navigation links, and right-aligned search bar and action icons.
+
+Actual prompt: I am building a Vue 3 e-commerce website. Create a reusable Navbar component using Tailwind CSS. The navbar should be a horizontal layout. On the LEFT side, include a logo icon, the website name, and navigation links: Home, Shop, Deals, Contact. On the RIGHT side, include a search bar with rounded-full style and a search icon inside, followed by three icon buttons: Wishlist, cart (with item count badge), and user profile avatar. The design should be modern, responsive, and support dark mode using Tailwind CSS.
+
+--------------------------------------------------------
+The aim 02: Create a reusable HeroSlide component for the homepage with left-aligned product details and a right-side image card with hover effect.
+
+Actual prompt: I am building the homepage of a Vue 3 e-commerce website. Create a reusable HeroSlide component using Tailwind CSS. The layout should be a two-column horizontal section. On the LEFT side, add content with 25px padding including product name (large bold text) and price below it. Under the price, include two buttons: "Shop Collection" and "View Lookbook" with modern styling. On the RIGHT side, with 20px padding from the right, create a rectangular card with a hover effect (slight rotation or scale). Inside the rectangle, place the product image centered. The design should be modern, responsive, and support dark mode using Tailwind CSS.
+
+--------------------------------------------------------
+The aim 03: Create a ProductCard component with hover border effect, offer badge, and two-section layout.
+
+Actual prompt: Create a reusable ProductCard component using Tailwind CSS. The card should be a rectangle with rounded corners and a subtle border. On hover, the border should change to green with a smooth transition. Add a small offer badge at the top-right corner styled as a pill. Divide the card into two sections: the top section for the product image centered and properly scaled, and the bottom section for product details including title, category, and price. The design should be clean, modern, and responsive.
+
+--------------------------------------------------------
+The aim 04: Create a ProductGrid on the homepage to display multiple ProductCard components with proper alignment and spacing.
+
+Actual prompt: Create a ProductGrid component using Tailwind CSS for the homepage. Display multiple ProductCard components in a responsive grid layout. Use a 4-column grid on large screens, 2 columns on medium screens, and 1 column on mobile. Add consistent spacing between cards (`gap-6`) and center the grid horizontally. Make sure each ProductCard maintains its hover border effect and offer badge. Ensure the layout looks clean, modern, and responsive.
+
+--------------------------------------------------------
+The aim 05: Build the homepage layout with Navbar, HeroSlide, and ProductGrid fully aligned and responsive.
+
+Actual prompt: Create a homepage in Vue 3 using Tailwind CSS that includes: 
+1. Navbar at the top (logo, website name, navigation links on left; search bar, wishlist, cart, profile on right). 
+2. HeroSlide component below the navbar with left-aligned product details (name, price, two buttons) and right-aligned product image card with hover effect. 
+3. ProductGrid component below HeroSlide displaying multiple ProductCard components in a responsive grid (4 columns on large, 2 on medium, 1 on mobile) with proper spacing and alignment. 
+Ensure the layout is fully responsive, modern, clean, and supports dark mode.
+
+--------------------------------------------------------
+The aim 06: Fetch products from DummyJSON API and display them in ProductGrid.
+Actual prompt: In my Vue 3 TypeScript project, fetch products from the DummyJSON /products endpoint. Use the ProductResponse and Product interfaces for proper typing. Replace the static products array in ProductGrid with the data from the API. Make sure each ProductCard receives the correct props and displays the product title, price, category, image, and offer badge (use discountPercentage for offer). Ensure proper error handling and loading state while fetching. Keep the ProductGrid layout responsive and aligned.
+
+--------------------------------------------------------
+The aim 07: Add loading and error states to the ProductGrid while fetching API data.
+Actual prompt: Update the ProductGrid component to show a loading spinner or skeleton cards while products are being fetched from DummyJSON API. If there is an error fetching data, display a friendly error message with a retry button. Maintain all responsive grid styling and hover effects on ProductCards. Ensure TypeScript types are used properly for the API response.
+
+--------------------------------------------------------
+The aim 08: Integrate HeroSlide dynamically with API product data.
+Actual prompt: Update the HeroSlide component to receive product data as props. Select the first product from the API response to display in HeroSlide by default (product name, price, image, and buttons). Ensure that padding and hover effects on the product image card remain intact. Keep the layout responsive for mobile, tablet, and desktop screens.
+
+--------------------------------------------------------
+The aim 09: Make ProductCard reusable with dynamic props from API.
+Actual prompt: Ensure the ProductCard component can accept a Product prop from the DummyJSON API and dynamically display the title, category, price, image, and offer badge (discountPercentage). Maintain the hover green border effect, top-right offer badge, and two-section layout (image top, details bottom). Ensure all TypeScript props are correctly typed.
+
+--------------------------------------------------------
+The aim 10: Connect the full homepage layout with Navbar, HeroSlide, and ProductGrid to use API data dynamically.
+Actual prompt: Update the homepage template to pass the API-fetched product data to HeroSlide (first product) and ProductGrid (all products). Ensure Navbar remains static. Make the homepage fully responsive, modern, and consistent with Tailwind CSS styling. Use TypeScript types to ensure correct data is passed to all components. Include proper loading and error handling.
+
+--------------------------------------------------------
+The aim 11: Create a Shop page layout with Navbar and sidebar filter section.
+Actual prompt: Build a Shop page in Vue 3 using TypeScript. Include the Navbar at the top (reuse existing component) and a left sidebar for product filters (categories, price range, discount, etc.). Make the sidebar collapsible on mobile and ensure the layout is fully responsive. Use Tailwind CSS for styling and maintain consistent spacing and alignment with the rest of the site.
+
+--------------------------------------------------------
+The aim 12: Create a reusable ProductCard component for the Shop page.
+Actual prompt: Build a ProductCard component specifically for the Shop page that receives a Product prop from the DummyJSON API. Display the product image, title, category, price, discount badge, and an “Add to Cart” button. Maintain hover effects, responsive layout, and proper TypeScript typing for props. Ensure the card layout fits well in a grid.
+
+--------------------------------------------------------
+The aim 13: Build a responsive ProductGrid component for the Shop page.
+Actual prompt: Create a ProductGrid component for the Shop page that displays a list of ProductCards. Fetch product data from the DummyJSON API and pass each product to the ProductCard. Make the grid responsive for desktop, tablet, and mobile, with proper spacing and alignment. Include error handling and a loading state (spinner or skeleton cards) while fetching data. Ensure TypeScript types are used correctly for the API response.
+
+--------------------------------------------------------
+The aim 14: Connect the Shop page components to display dynamic products.
+Actual prompt: Integrate Navbar, Sidebar, and ProductGrid in the Shop page. Fetch all products from the DummyJSON API and pass the data dynamically to the ProductGrid. Ensure the sidebar filter affects the products displayed in real-time. Maintain responsive design, hover effects, and proper Tailwind CSS styling. Include loading and error states, and use TypeScript to enforce correct data types across all components.
+
+--------------------------------------------------------
+The aim 15: Create a Product Details page to show full product information.
+Actual prompt: Build a Product Details page in Vue 3 using TypeScript. On the left side, display the product image prominently with a hover or thumbnail preview if multiple images exist. On the right side, show the product title, category, rating, number of reviews, price, detailed description, and buttons for “Buy Now” and “Add to Basket.” Include a “Recently Viewed” section below with other product thumbnails and prices. Ensure the layout is fully responsive for desktop, tablet, and mobile screens, using Tailwind CSS for consistent styling. Implement proper TypeScript typing for the product data fetched from the DummyJSON API, and include loading and error states while fetching the product.
+
+--------------------------------------------------------
+The aim 16: Create a CartPage component for showing selected products. Actual prompt: Build a CartPage component in Vue 3 using TypeScript that opens as a sidebar when the cart button is clicked. Display all products added to the cart with their image, title, price, quantity selector, and remove button. Show subtotal, shipping cost, and total amount dynamically. Include a section for applying a promo code and a progress bar for free shipping. The “Select Items to Checkout” button should be disabled if no products are selected. Ensure the component updates in real-time when a user clicks “Add to Basket” from ProductCards. Make the CartPage fully responsive for desktop and mobile screens and use Tailwind CSS for styling. Implement proper TypeScript types for cart items and ensure smooth transitions when opening and closing the sidebar.
+
+--------------------------------------------------------
+The aim 17: Create a multi-step CheckoutPage component
+Actual prompt: Build a CheckoutPage component in Vue 3 using TypeScript that guides the user through a three-step checkout process.
+
+Customer Information Step: Collect customer details including name, email, phone number, and shipping address. All fields should be validated (required fields, proper email and phone formats). Include a “Next” button to proceed to the Payment step.
+Payment Information Step: Collect payment details including credit/debit card number, expiry date, CVV, and billing address. Optionally include a PayPal or other payment method toggle. Validate all inputs properly. Include a “Back” button to return to Customer Information and a “Next” button to proceed to Order Confirmation.
+Order Confirmation Step: Display a summary of products in the cart with image, title, quantity, and price. Show subtotal, shipping cost, promo code discount (if applied), and total amount. Include a “Place Order” button that finalizes the checkout and displays a confirmation message upon successful submission.
+
+Additional Requirements:
+Implement smooth transitions between steps.
+Use proper TypeScript types for form data and cart items.
+Make the component fully responsive for mobile and desktop.
+Apply Tailwind CSS for styling.
+Ensure real-time updates for cart totals if products in the cart change before order placement.
+
+--------------------------------------------------------
+The aim 18: Create a LoginPage component
+Actual prompt: Build a LoginPage component in Vue 3 using TypeScript and Tailwind CSS, divided into two sections:
+
+Left Side – Image Section:
+Display a full-height image on the left side of the page.
+Ensure the image scales properly and looks good on both desktop and mobile screens.
+Right Side – Sign-In Form:
+Include input fields for email/username and password.
+Include a “Sign In” button.
+Add links for “Forgot Password?” and “Sign Up”.
+Validate inputs: required fields, proper email format.
+Display error messages for invalid credentials or missing fields.
+
+Additional Requirements:
+The layout should be responsive: on smaller screens, the image should be hidden or moved above the form.
+Use Tailwind CSS for styling with clean, modern design.
+Implement smooth transitions for focus and hover effects.
+Use proper TypeScript types for form data and validation.
+Ensure accessibility standards (ARIA labels, proper tab navigation).
+
+--------------------------------------------------------
+The aim 19: Create a ForgotPasswordPage component
+Actual prompt: Build a ForgotPasswordPage component in Vue 3 using TypeScript and Tailwind CSS.
+
+Include an input field for email where the user can enter their registered email address.
+Add a “Send Reset Link” button to submit the email.
+Validate the email input: required field and proper email format.
+Display success or error messages based on submission.
+Include a link to “Back to Sign In”.
+Make the page fully responsive for desktop and mobile.
+Use Tailwind CSS for styling with smooth focus/hover transitions.
+Implement proper TypeScript types for form data and validation.
+
+--------------------------------------------------------
+The aim 20: Create a ForgotPasswordPage component
+Actual prompt: Build a ForgotPasswordPage component in Vue 3 using TypeScript and Tailwind CSS.
+
+Include an input field for email where the user can enter their registered email address.
+Add a “Send Reset Link” button to submit the email.
+Validate the email input: required field and proper email format.
+Display success or error messages based on submission.
+Include a link to “Back to Sign In”.
+Make the page fully responsive for desktop and mobile.
+Use Tailwind CSS for styling with smooth focus/hover transitions.
+Implement proper TypeScript types for form data and validation.
+
+--------------------------------------------------------
+The aim 21:Check API Data Fetching
+Actual Prompt: 
+Check if the products API from DummyJSON (/products) is being fetched correctly in my Vue 3 project using TypeScript. 
+- Verify that all product fields (id, title, description, price, discountPercentage, rating, stock, brand, category, thumbnail, images) are received. 
+- Show a console log for the first 5 products. 
+- Highlight any missing or undefined fields.
+
+--------------------------------------------------------
+The aim 22:Verify Product Rendering
+Actual Prompt: 
+Check if all products fetched from DummyJSON are rendering correctly in the ProductCards component. 
+- Ensure the image, title, price, and rating are displayed. 
+- Check responsiveness for desktop and mobile. 
+- Highlight any overlapping or misaligned elements.
+
+--------------------------------------------------------
+The aim 23:Check Cart Functionality
+Actual Prompt: 
+Verify that clicking "Add to Basket" updates the CartPage in real-time. 
+- Ensure quantity increments correctly if the same product is added multiple times. 
+- Check subtotal, shipping, and total amounts for accuracy. 
+- Ensure removing a product updates totals correctly.
+
+--------------------------------------------------------
+The aim 24:Test Checkout Page Flow
+Actual Prompt: 
+Check the multi-step CheckoutPage:
+1. Customer Information – validate all required fields.
+2. Payment Information – validate card inputs and billing info.
+3. Order Confirmation – ensure products, subtotal, shipping, promo discount, and total are correct.
+- Test navigation between steps using "Next" and "Back" buttons.
+
+--------------------------------------------------------
+The aim 25:Verify Login and Auth Pages
+Actual Prompt: 
+Check the LoginPage, CreateAccountPage, and ForgotPasswordPage:
+- Validate input fields for required values and proper formats.
+- Check responsiveness (image on left side, form on right side) on desktop and mobile.
+- Ensure links (Forgot Password, Sign Up, Sign In) navigate correctly.
+
+--------------------------------------------------------
+The aim 26:CSS & Tailwind Setup Check
+Verify Tailwind CSS setup and styling:
+- Ensure responsive breakpoints (sm, md, lg, xl) work correctly.
+- Check that buttons, inputs, and cards have proper hover/focus effects.
+- Highlight any misaligned elements or overflow issues.
+- Test dark/light mode if applicable.
+
+--------------------------------------------------------
+The aim 27:Cross-Browser & Device Testing
+Check the website layout and functionality on multiple devices and browsers:
+- Desktop (Chrome, Edge, Firefox)
+- Mobile (iOS Safari, Android Chrome)
+- Test responsiveness, font scaling, and interactive elements.
+
+--------------------------------------------------------
+The aim 28:Performance & Debugging
+Check website performance for product rendering:
+- Ensure images load with correct sizes.
+- Lazy-load product images if many products exist.
+- Check console for errors or warnings.
+- Verify that adding/removing products from cart does not cause lag.
+
+========================================================
+  End of AI Usage Log
+  Total prompts: 28
+  AI tool used: Chatgpt / Google AI Studio (Gemini 2.5 Pro)
+========================================================

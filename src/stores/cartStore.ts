@@ -10,71 +10,61 @@ export interface CartItem {
   price: number
   thumbnail: string
   qty: number
+  size?: string //  optional for clothes/shoes
 }
 
-const LS_KEY = "shopinhaven_cart"
+const LS_PREFIX = "shopinhaven_cart"
+
+function safeEmailKey(email: string) {
+  return email.trim().toLowerCase().replace(/[^a-z0-9]/g, "_")
+}
 
 export const useCartStore = defineStore("cart", () => {
-  // -----------------------------
-  // State
-  // -----------------------------
+  const auth = useAuthStore()
+  const toast = useToastStore()
+
   const items = ref<CartItem[]>([])
 
-  // -----------------------------
-  // LocalStorage helpers
-  // -----------------------------
+  function currentKey() {
+    const email = auth.user?.email
+    if (!auth.isAuthenticated || !email) return `${LS_PREFIX}_guest`
+    return `${LS_PREFIX}_${safeEmailKey(email)}`
+  }
+
   function load() {
     try {
-      const stored = localStorage.getItem(LS_KEY)
-      items.value = stored ? JSON.parse(stored) : []
+      const stored = localStorage.getItem(currentKey())
+      items.value = stored ? (JSON.parse(stored) as CartItem[]) : []
     } catch {
       items.value = []
     }
   }
 
   function save() {
-    localStorage.setItem(LS_KEY, JSON.stringify(items.value))
+    localStorage.setItem(currentKey(), JSON.stringify(items.value))
   }
 
-  // Persist cart whenever items change
+  // save whenever cart changes
   watch(items, save, { deep: true })
 
-  // -----------------------------
-  // Computed
-  // -----------------------------
-  const totalItems = computed(() =>
-    items.value.reduce((sum, item) => sum + item.qty, 0)
+  //  switch cart when login/logout happens
+  watch(
+    () => [auth.isAuthenticated, auth.user?.email],
+    () => load(),
+    { immediate: true }
   )
 
-  const totalPrice = computed(() =>
-    items.value.reduce((sum, item) => sum + item.price * item.qty, 0)
-  )
+  const totalItems = computed(() => items.value.reduce((sum, item) => sum + item.qty, 0))
+  const totalPrice = computed(() => items.value.reduce((sum, item) => sum + item.price * item.qty, 0))
 
-  // -----------------------------
-  // Actions
-  // -----------------------------
-
-  /**
-   * Add a product to the cart.
-   * - Requires user to be authenticated.
-   * - If not signed in, shows a toast and redirects to /signin.
-   *
-   * Returns:
-   * - true  => item added successfully
-   * - false => not added (user not authenticated)
-   */
-  function addToCart(product: Product, qty = 1): boolean {
-    const auth = useAuthStore()
-    const toast = useToastStore()
-
-    // Auth guard (stores should NOT use useRouter())
+ // Add to cart (authentication required)
+  function addToCart(product: Product, qty = 1, size?: string): boolean {
     if (!auth.isAuthenticated) {
-      toast.show("Please sign in to add items to cart", "error")
-      window.location.href = "/signin" // simple redirect (safe anywhere)
-      return false
-    }
+    toast.show("Please sign in to add items to cart", "error")
+    return false
+  }
 
-    const existing = items.value.find((item) => item.id === product.id)
+    const existing = items.value.find((item) => item.id === product.id && item.size === size)
 
     if (existing) {
       existing.qty += qty
@@ -85,44 +75,38 @@ export const useCartStore = defineStore("cart", () => {
         price: product.price,
         thumbnail: product.thumbnail,
         qty,
+        size,
       })
     }
 
+    toast.show("Added to cart", "success")
     return true
   }
 
-  /** Remove an item completely from the cart */
-  function removeFromCart(id: number) {
-    const idx = items.value.findIndex((item) => item.id === id)
-    if (idx !== -1) items.value.splice(idx, 1)
+  function removeFromCart(id: number, size?: string) {
+    items.value = items.value.filter((item) => !(item.id === id && item.size === size))
   }
 
-  /** Set item quantity (must be > 0) */
-  function setQty(id: number, qty: number) {
-    const item = items.value.find((item) => item.id === id)
+  function setQty(id: number, qty: number, size?: string) {
+    const item = items.value.find((x) => x.id === id && x.size === size)
     if (item && qty > 0) item.qty = qty
   }
 
-  /** Increase quantity by 1 */
-  function inc(id: number) {
-    const item = items.value.find((item) => item.id === id)
+  function inc(id: number, size?: string) {
+    const item = items.value.find((x) => x.id === id && x.size === size)
     if (item) item.qty++
   }
 
-  /** Decrease quantity by 1 (minimum 1) */
-  function dec(id: number) {
-    const item = items.value.find((item) => item.id === id)
+  function dec(id: number, size?: string) {
+    const item = items.value.find((x) => x.id === id && x.size === size)
     if (item && item.qty > 1) item.qty--
   }
 
-  /** Clear entire cart */
   function clearCart() {
     items.value = []
   }
 
-  // -----------------------------
-  // Init
-  // -----------------------------
+  // init
   load()
 
   return {
@@ -135,5 +119,6 @@ export const useCartStore = defineStore("cart", () => {
     inc,
     dec,
     clearCart,
+    load,
   }
 })

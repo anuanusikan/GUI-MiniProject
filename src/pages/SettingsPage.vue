@@ -10,10 +10,7 @@ const auth = useAuthStore()
 const toast = useToastStore()
 const darkMode = useDarkModeStore()
 
-/**
- * Demo settings (frontend only)
- * You can later persist these in localStorage if you want.
- */
+
 const emailUpdates = ref(true)
 const smsUpdates = ref(false)
 const orderAlerts = ref(true)
@@ -39,12 +36,12 @@ function requireLogin(actionName: string) {
 function saveAccount() {
   if (!requireLogin("Account settings")) return
 
-  auth.signIn({
-    name: displayName.value.trim() || "Customer",
-    email: auth.user!.email,
-    phone: phone.value.trim() || undefined,
-    address: address.value.trim() || undefined,
-  })
+  auth.signUp({
+  name: displayName.value.trim() || "Customer",
+  email: auth.user!.email,
+  phone: phone.value.trim() || undefined,
+  address: address.value.trim() || undefined,
+})
 
   toast.show("Account details updated (demo)", "success")
 }

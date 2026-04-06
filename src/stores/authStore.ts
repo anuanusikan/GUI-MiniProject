@@ -1,36 +1,41 @@
 import { defineStore } from "pinia"
 import { computed, ref } from "vue"
 
+interface DummyUser {
+  id: number
+  username: string
+  email: string
+  firstName: string
+  lastName: string
+  gender: string
+  image: string
+  accessToken: string
+  refreshToken: string
+}
+
 type User = {
   name: string
   email: string
+  username?: string   
+  image?: string      
+  accessToken?: string
   phone?: string
   address?: string
 }
-
 
 const LS_KEY = "shopinhaven_user"
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(loadUser())
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
   const isAuthenticated = computed(() => !!user.value)
 
   function loadUser(): User | null {
     try {
       const raw = localStorage.getItem(LS_KEY)
-      if (!raw) return null
-
-      const parsed = JSON.parse(raw) as Partial<User>
-
-      // If persisted user is missing a name, derive a sensible fallback from the email
-      if (parsed && !parsed.name && parsed.email) {
-        parsed.name = parsed.email.split("@")[0]
-        // update persisted value so future loads are consistent
-        localStorage.setItem(LS_KEY, JSON.stringify(parsed))
-      }
-
-      return (parsed as User) || null
+      return raw ? (JSON.parse(raw) as User) : null
     } catch {
       return null
     }
@@ -41,15 +46,52 @@ export const useAuthStore = defineStore("auth", () => {
     else localStorage.setItem(LS_KEY, JSON.stringify(u))
   }
 
-  function signIn(payload: User) {
-    user.value = payload
-    persist(payload)
+  // ✅ Real DummyJSON API login
+  async function signIn(username: string, password: string): Promise<boolean> {
+    loading.value = true
+    error.value = null
+    try {
+      const res = await fetch("https://dummyjson.com/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, expiresInMins: 60 }),
+        credentials: "include",
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        error.value = data?.message ?? "Invalid credentials"
+        return false
+      }
+
+      const data: DummyUser = await res.json()
+      const mapped: User = {
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        username: data.username,
+        image: data.image,
+        accessToken: data.accessToken,
+      }
+      user.value = mapped
+      persist(mapped)
+      return true
+    } catch {
+      error.value = "Network error. Please try again."
+      return false
+    } finally {
+      loading.value = false
+    }
   }
 
-  function signUp(payload: User) {
-    // frontend-only: sign up behaves like sign in
-    user.value = payload
-    persist(payload)
+  // kept for sign up form (DummyJSON has no real signup)
+  function signUp(payload: { name: string; email: string; phone?: string; address?: string }) {
+    const u: User = {
+      name: payload.name,
+      email: payload.email,
+      username: payload.email.split("@")[0],
+    }
+    user.value = u
+    persist(u)
   }
 
   function signOut() {
@@ -57,5 +99,5 @@ export const useAuthStore = defineStore("auth", () => {
     persist(null)
   }
 
-  return { user, isAuthenticated, signIn, signUp, signOut }
+  return { user, isAuthenticated, loading, error, signIn, signUp, signOut }
 })

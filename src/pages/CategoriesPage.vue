@@ -7,6 +7,9 @@ import { getAllProducts } from "../services/productService"
 import CategoriesBar from "../components/CategoriesBar.vue"
 import ProductCard from "../components/ProductCard.vue"
 
+
+
+
 const searchStore = useSearchStore()
 const filterStore = useFilterStore()
 
@@ -15,6 +18,19 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 
 onMounted(async () => {
+  try {
+    allProducts.value = await getAllProducts()
+  } catch {
+    error.value = "Unable to load products"
+  } finally {
+    loading.value = false
+  }
+})
+
+onMounted(async () => {
+  // Reset any previous category selection
+  filterStore.selectedCategory = null
+
   try {
     allProducts.value = await getAllProducts()
   } catch {

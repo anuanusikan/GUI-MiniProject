@@ -14,9 +14,7 @@ const allProducts = ref<Product[]>([])
 /** Minimum discount filter */
 const minDiscount = ref(15)
 
-/** Sorting */
-type SortKey = "discount" | "priceAsc" | "priceDesc" | "rating"
-const sortBy = ref<SortKey>("discount")
+
 
 /** ---------------- Persistent Countdown ---------------- */
 const LS_DEAL_END = "shopinhaven_deal_end"
@@ -79,13 +77,9 @@ function moneyUSD(n: number) {
 const offerProducts = computed(() => {
   const filtered = allProducts.value.filter((p: any) => (p.discountPercentage ?? 0) >= minDiscount.value)
 
-  const sorted = [...filtered].sort((a: any, b: any) => {
-    if (sortBy.value === "discount") return (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0)
-    if (sortBy.value === "rating") return (b.rating ?? 0) - (a.rating ?? 0)
-    if (sortBy.value === "priceAsc") return (a.price ?? 0) - (b.price ?? 0)
-    if (sortBy.value === "priceDesc") return (b.price ?? 0) - (a.price ?? 0)
-    return 0
-  })
+  const sorted = [...filtered].sort(
+  (a: any, b: any) => (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0)
+)
 
   return sorted.slice(0, 40)
 })
@@ -319,23 +313,7 @@ onUnmounted(() => {
             </button>
           </div>
 
-          <!-- Sort dropdown -->
-          <div class="flex items-center gap-2">
-            <label class="text-sm font-bold opacity-90">Sort:</label>
-
-            <select
-              v-model="sortBy"
-              class="rounded-lg border px-3 py-2 text-sm font-semibold
-                     border-gray-200 bg-white/80 text-gray-900
-                     focus:outline-none focus:ring-2 focus:ring-amber-400/60
-                     dark:border-white/15 dark:bg-white/10 dark:text-white"
-            >
-              <option class="text-gray-900" value="discount">Highest discount</option>
-              <option class="text-gray-900" value="rating">Top rated</option>
-              <option class="text-gray-900" value="priceAsc">Price: low to high</option>
-              <option class="text-gray-900" value="priceDesc">Price: high to low</option>
-            </select>
-          </div>
+          
         </div>
       </div>
     </div>

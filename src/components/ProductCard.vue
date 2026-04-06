@@ -5,6 +5,7 @@ import type { Product } from "../types/product"
 import { useCartStore } from "../stores/cartStore"
 import { useToastStore } from "../stores/toastStore"
 import { useFavoritesStore } from "../stores/favoritesStore"
+import { useAuthStore } from "../stores/authStore"
 import { toLKR, formatLKR } from "../utils/currency"
 
 const props = defineProps<{ product: Product }>()
@@ -14,9 +15,10 @@ const router = useRouter()
 const cart = useCartStore()
 const toast = useToastStore()
 const favs = useFavoritesStore()
+const auth = useAuthStore()
 
-const discount = computed(() => Math.round((props.product as any).discountPercentage ?? 0))
-const rating = computed(() => Number((props.product as any).rating ?? 0))
+const discount = computed(() => Math.round(props.product.discountPercentage ?? 0))
+const rating = computed(() => Number(props.product.rating ?? 0))
 const isFav = computed(() => favs.has(props.product.id))
 
 
@@ -26,6 +28,13 @@ function goDetails() {
 }
 
 function addToCart() {
+  // Check if user is authenticated
+  if (!auth.isAuthenticated) {
+    toast.show("Please sign in to add items to cart", "error")
+    router.push("/signin")
+    return
+  }
+
   const ok = cart.addToCart(props.product, 1)
   if (ok) toast.show("Added to cart", "success")
 }
@@ -54,7 +63,7 @@ function toggleFav() {
              dark:bg-gradient-to-br dark:from-[#050505] dark:via-[#141414] dark:to-black">
       <button type="button" class="block w-full text-left" @click="goDetails" aria-label="Open product details">
         <div class="aspect-square w-full p-6 flex items-center justify-center">
-          <img :src="(product as any).thumbnail" :alt="product.title"
+          <img :src="product.thumbnail" :alt="product.title"
             class="max-h-[210px] w-auto object-contain transition-transform duration-300 group-hover:scale-110"
             loading="lazy" />
         </div>
@@ -93,7 +102,7 @@ function toggleFav() {
         <span class="text-xs font-bold px-3 py-1 rounded-full
                  border bg-[#fff8e6] text-[#7a5a12] border-[#e9d39a]
                  dark:bg-black/40 dark:text-[#f5d27a] dark:border-white/10">
-          {{ (product as any).category }}
+          {{ product.category }}
         </span>
 
         <div class="flex items-center gap-1.5">
