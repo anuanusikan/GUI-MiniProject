@@ -16,14 +16,14 @@ interface DummyUser {
 type User = {
   name: string
   email: string
-  username?: string   
-  image?: string      
+  username?: string
+  image?: string
   accessToken?: string
   phone?: string
   address?: string
 }
 
-const LS_KEY = "shopinhaven_user"
+const LS_KEY = "AlloraCart_User"
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(loadUser())
@@ -46,7 +46,6 @@ export const useAuthStore = defineStore("auth", () => {
     else localStorage.setItem(LS_KEY, JSON.stringify(u))
   }
 
-  // ✅ Real DummyJSON API login
   async function signIn(username: string, password: string): Promise<boolean> {
     loading.value = true
     error.value = null
@@ -55,16 +54,20 @@ export const useAuthStore = defineStore("auth", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, expiresInMins: 60 }),
-        credentials: "include",
+        // credentials: "include" removed — causes CORS issues on Netlify
       })
 
+      // Read the body ONCE only
+      const data = await res.json() as DummyUser & { message?: string }
+
+      console.log("Status:", res.status)
+      console.log("Response:", data)
+
       if (!res.ok) {
-        const data = await res.json()
         error.value = data?.message ?? "Invalid credentials"
         return false
       }
 
-      const data: DummyUser = await res.json()
       const mapped: User = {
         name: `${data.firstName} ${data.lastName}`,
         email: data.email,
@@ -83,7 +86,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  // kept for sign up form (DummyJSON has no real signup)
   function signUp(payload: { name: string; email: string; phone?: string; address?: string }) {
     const u: User = {
       name: payload.name,
