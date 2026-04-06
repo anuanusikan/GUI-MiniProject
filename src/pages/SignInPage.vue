@@ -8,63 +8,40 @@ const router = useRouter()
 const auth = useAuthStore()
 const toast = useToastStore()
 
-const email = ref("")
+const username = ref("")
 const password = ref("")
-const loading = ref(false)
 const showPassword = ref(false)
 
-// Demo accounts
+// Real DummyJSON demo accounts
 const demoAccounts = [
-  { name: "John Doe", email: "john@demo.com", password: "demo123" },
-  { name: "Jane Smith", email: "jane@demo.com", password: "demo123" },
-  { name: "Admin User", email: "admin@demo.com", password: "admin123" },
+  { label: "Emily Johnson",   username: "emilys",   password: "emilyspass"   },
+  { label: "James Davis",     username: "jamesd",   password: "jamesdpass"   },
+  { label: "Olivia Wilson",   username: "oliviaw",  password: "oliviawpass"  },
 ]
 
 function useDemoAccount(account: typeof demoAccounts[number]) {
-  email.value = account.email
+  username.value = account.username
   password.value = account.password
-  toast.show(`Using ${account.name}'s account`, "info")
+  toast.show(`Loaded ${account.label}'s account — click Sign In`, "info")
 }
 
 async function handleSignIn() {
-  const e = email.value.trim()
-  const p = password.value
+  const u = username.value.trim()
+  const p = password.value.trim()
 
-  if (!e || !p) {
+  if (!u || !p) {
     toast.show("Please fill in all fields", "error")
     return
   }
 
-  loading.value = true
+  const ok = await auth.signIn(u, p)
 
-  setTimeout(() => {
-    // Check demo accounts
-    const demoAccount = demoAccounts.find((acc) => acc.email === e && acc.password === p)
-
-    if (demoAccount) {
-      auth.signIn({ name: demoAccount.name, email: demoAccount.email })
-      toast.show(`Welcome back, ${demoAccount.name}!`, "success")
-      router.push("/")
-      loading.value = false
-      return
-    }
-
-    // ✅ FIX: nameFromEmail cannot be undefined with this safe fallback
-    const nameFromEmail = (e.split("@")[0] || "User").trim()
-    const capitalizedName =
-      nameFromEmail.length > 0
-        ? nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
-        : "User"
-
-    auth.signIn({
-      name: capitalizedName,
-      email: e,
-    })
-
-    toast.show("Signed in successfully!", "success")
+  if (ok) {
+    toast.show(`Welcome back, ${auth.user?.name}!`, "success")
     router.push("/")
-    loading.value = false
-  }, 900)
+  } else {
+    toast.show(auth.error ?? "Invalid credentials", "error")
+  }
 }
 
 function goToSignUp() {
@@ -79,6 +56,7 @@ function goToSignUp() {
            dark:bg-[radial-gradient(ellipse_at_top,_rgba(250,204,21,0.16),_transparent_60%),linear-gradient(135deg,_#000000_0%,_#111827_45%,_#a3a3a3_120%)]"
   >
     <div class="w-full max-w-md">
+
       <!-- Header -->
       <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl
@@ -86,14 +64,15 @@ function goToSignUp() {
                     dark:bg-white/10 dark:border-white/15 backdrop-blur">
           <span class="text-2xl">🛒</span>
         </div>
-
         <h1 class="mt-4 text-3xl font-extrabold text-gray-900 dark:text-white">
           Welcome back to
           <span class="bg-gradient-to-r from-amber-500 to-yellow-400 bg-clip-text text-transparent">
             AlloraCart
           </span>
         </h1>
-        <p class="mt-2 text-sm text-gray-700/80 dark:text-white/70">Sign in to continue shopping</p>
+        <p class="mt-2 text-sm text-gray-700/80 dark:text-white/70">
+          Sign in with your DummyJSON account
+        </p>
       </div>
 
       <!-- Card -->
@@ -105,15 +84,17 @@ function goToSignUp() {
         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-6">Sign In</h2>
 
         <form @submit.prevent="handleSignIn" class="space-y-5">
-          <!-- Email -->
+
+          <!-- Username (not email) -->
           <div>
             <label class="block text-sm font-bold text-gray-800 dark:text-white/80 mb-2">
-              Email Address
+              Username
             </label>
             <input
-              v-model="email"
-              type="email"
-              placeholder="your@email.com"
+              v-model="username"
+              type="text"
+              placeholder="e.g. emilys"
+              autocomplete="username"
               class="w-full px-4 py-3 rounded-xl border-2
                      border-gray-200 bg-white text-gray-900
                      focus:ring-2 focus:ring-amber-400 focus:border-transparent
@@ -131,7 +112,8 @@ function goToSignUp() {
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 placeholder="Enter your password"
-                class="w-full px-4 py-3 rounded-xl border-2 pr-12
+                autocomplete="current-password"
+                class="w-full px-4 py-3 rounded-xl border-2 pr-16
                        border-gray-200 bg-white text-gray-900
                        focus:ring-2 focus:ring-amber-400 focus:border-transparent
                        dark:border-white/15 dark:bg-white/10 dark:text-white dark:placeholder:text-white/50"
@@ -149,41 +131,51 @@ function goToSignUp() {
             </div>
           </div>
 
-          <!-- Button -->
+          <!-- Submit -->
           <button
             type="submit"
-            :disabled="loading"
+            :disabled="auth.loading"
             class="w-full py-3 rounded-xl font-extrabold
                    text-black bg-gradient-to-r from-amber-400 to-yellow-300
                    hover:opacity-90 transition disabled:opacity-60"
           >
-            {{ loading ? "Signing In..." : "Sign In" }}
+            {{ auth.loading ? "Signing In..." : "Sign In" }}
           </button>
+
+          <!-- Error message -->
+          <p v-if="auth.error" class="text-sm text-red-600 dark:text-red-400 text-center">
+            {{ auth.error }}
+          </p>
+
         </form>
 
         <!-- Demo Accounts -->
         <div class="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
           <p class="text-sm font-extrabold text-gray-900 dark:text-white mb-3 text-center">
-            🎭 Try Demo Accounts
+            Try a DummyJSON demo account
           </p>
-
           <div class="space-y-2">
             <button
               v-for="account in demoAccounts"
-              :key="account.email"
+              :key="account.username"
               @click="useDemoAccount(account)"
               type="button"
               class="w-full px-4 py-2 rounded-xl text-left border
                      border-gray-200 bg-white/70 hover:bg-white/90 transition
                      dark:border-white/10 dark:bg-white/10 dark:hover:bg-white/15"
             >
-              <p class="text-sm font-bold text-gray-900 dark:text-white">{{ account.name }}</p>
-              <p class="text-xs text-gray-600 dark:text-white/60">{{ account.email }}</p>
+              <p class="text-sm font-bold text-gray-900 dark:text-white">{{ account.label }}</p>
+              <p class="text-xs text-gray-600 dark:text-white/60">
+                username: {{ account.username }}
+              </p>
             </button>
           </div>
+          <p class="text-xs text-gray-500 dark:text-white/40 text-center mt-3">
+            Click an account above, then press Sign In
+          </p>
         </div>
 
-        <!-- Link -->
+        <!-- Sign up link -->
         <div class="mt-6 text-center">
           <p class="text-sm text-gray-700 dark:text-white/70">
             Don't have an account?
@@ -202,11 +194,13 @@ function goToSignUp() {
       <div class="mt-6 text-center">
         <router-link
           to="/"
-          class="text-sm font-bold text-gray-800 dark:text-white/80 hover:text-amber-600 dark:hover:text-amber-300 transition"
+          class="text-sm font-bold text-gray-800 dark:text-white/80
+                 hover:text-amber-600 dark:hover:text-amber-300 transition"
         >
           ← Back to Home
         </router-link>
       </div>
+
     </div>
   </div>
 </template>

@@ -1,3 +1,4 @@
+// stores/searchStore.ts
 import { defineStore } from "pinia"
 import { ref } from "vue"
 

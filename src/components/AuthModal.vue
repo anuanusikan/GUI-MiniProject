@@ -22,7 +22,7 @@ function submit() {
     if (!trimmedEmail) return
 
     if (isSignIn.value) {
-        authStore.signIn({
+        authStore.signUp({
             name: trimmedName,
             email: trimmedEmail,
         })

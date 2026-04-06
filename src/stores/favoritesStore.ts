@@ -4,72 +4,100 @@ import type { Product } from "../types/product"
 import { useAuthStore } from "./authStore"
 import { useToastStore } from "./toastStore"
 
-const LS_KEY = "shopinhaven_favorites"
+const PREFIX = "shopinhaven_favorites"
+const LEGACY_KEY = "shopinhaven_favorites" // old single-key
+
+function safeEmailKey(email: string) {
+  return email.trim().toLowerCase().replace(/[^a-z0-9]/g, "_")
+}
 
 export const useFavoritesStore = defineStore("favorites", () => {
-  // -----------------------------
-  // State
-  // -----------------------------
+  const auth = useAuthStore()
   const items = ref<Product[]>([])
 
-  // -----------------------------
-  // LocalStorage helpers
-  // -----------------------------
-  function load() {
+  function currentKey() {
+    const email = auth.user?.email
+    if (!auth.isAuthenticated || !email) return `${PREFIX}_guest`
+    return `${PREFIX}_${safeEmailKey(email)}`
+  }
+
+  function tryParseArray(raw: string | null): Product[] | null {
+    if (!raw) return null
     try {
-      const stored = localStorage.getItem(LS_KEY)
-      items.value = stored ? JSON.parse(stored) : []
+      const parsed = JSON.parse(raw)
+      return Array.isArray(parsed) ? parsed : null
     } catch {
-      items.value = []
+      return null
     }
+  }
+
+  function migrateIfNeeded(targetKey: string) {
+    // If target already has data, don't migrate
+    const already = tryParseArray(localStorage.getItem(targetKey))
+    if (already && already.length) return already
+
+    // 1) migrate legacy -> target
+    const legacy = tryParseArray(localStorage.getItem(LEGACY_KEY))
+    if (legacy && legacy.length) {
+      localStorage.setItem(targetKey, JSON.stringify(legacy))
+      return legacy
+    }
+
+    // 2) migrate guest -> target (optional nice behavior)
+    const guest = tryParseArray(localStorage.getItem(`${PREFIX}_guest`))
+    if (guest && guest.length) {
+      localStorage.setItem(targetKey, JSON.stringify(guest))
+      return guest
+    }
+
+    return null
+  }
+
+  function load() {
+    const key = currentKey()
+
+    // normal load
+    const stored = tryParseArray(localStorage.getItem(key))
+    if (stored) {
+      items.value = stored
+      return
+    }
+
+    // migrate then load
+    const migrated = migrateIfNeeded(key)
+    items.value = migrated ?? []
   }
 
   function save() {
-    localStorage.setItem(LS_KEY, JSON.stringify(items.value))
+    localStorage.setItem(currentKey(), JSON.stringify(items.value))
   }
 
-  // Persist favorites whenever items change
   watch(items, save, { deep: true })
 
-  // -----------------------------
-  // Computed
-  // -----------------------------
+  // reload when auth changes
+  watch(
+    () => [auth.isAuthenticated, auth.user?.email],
+    () => load(),
+    { immediate: true }
+  )
+
   const count = computed(() => items.value.length)
 
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-  /** Check if a product is already in favorites */
-  function has(id: number): boolean {
-    return items.value.some((item) => item.id === id)
+  function has(id: number) {
+    return items.value.some((p) => p.id === id)
   }
 
-  // -----------------------------
-  // Actions
-  // -----------------------------
-
-  /**
-   * Toggle a product in favorites.
-   * - Requires user to be authenticated.
-   * - If not signed in, shows a toast and redirects to /signin.
-   *
-   * Returns:
-   * - true  => added to favorites
-   * - false => removed from favorites OR blocked (not authenticated)
-   */
   function toggle(product: Product): boolean {
-    const auth = useAuthStore()
     const toast = useToastStore()
 
-    // Auth guard (stores should NOT use useRouter())
+    // keep your rule: must be logged in to add favorites
     if (!auth.isAuthenticated) {
       toast.show("Please sign in to add favorites", "error")
-      window.location.href = "/signin" // simple redirect (safe anywhere)
+      window.location.href = "/signin"
       return false
     }
 
-    const idx = items.value.findIndex((item) => item.id === product.id)
-
+    const idx = items.value.findIndex((p) => p.id === product.id)
     if (idx === -1) {
       items.value.push(product)
       return true
@@ -79,28 +107,17 @@ export const useFavoritesStore = defineStore("favorites", () => {
     }
   }
 
-  /** Remove a single favorite by id */
   function remove(id: number) {
-    const idx = items.value.findIndex((item) => item.id === id)
+    const idx = items.value.findIndex((p) => p.id === id)
     if (idx !== -1) items.value.splice(idx, 1)
   }
 
-  /** Clear all favorites */
   function clear() {
     items.value = []
   }
 
-  // -----------------------------
-  // Init
-  // -----------------------------
+  // init
   load()
 
-  return {
-    items,
-    count,
-    has,
-    toggle,
-    remove,
-    clear,
-  }
+  return { items, count, has, toggle, remove, clear, load }
 })

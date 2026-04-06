@@ -74,13 +74,16 @@ router.beforeEach((to) => {
   const auth = useAuthStore()
   const checkout = useCheckoutStore()
 
-  if (to.path === "/cart" && !auth.isAuthenticated) {
-    return "/signin"
+  const protectedRoutes = ["Cart", "Favorites", "Checkout", "Orders", "Messages", "Payment", "Settings"]
+
+  // protect routes that require login
+  if (protectedRoutes.includes(to.name as string) && !auth.isAuthenticated) {
+    return { name: "SignIn" }
   }
 
-  if (to.path === "/checkout") {
-    if (!auth.isAuthenticated) return "/signin"
-    if (!checkout.selectedIds.length) return "/cart"
+  // prevent checkout with no selected products
+  if (to.name === "Checkout" && !checkout.selectedIds.length) {
+    return { name: "Cart" }
   }
 })
 
